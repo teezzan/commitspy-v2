@@ -3,6 +3,8 @@ module github.com/teezzan/commitspy
 go 1.14
 
 require (
+	firebase.google.com/go v3.13.0+incompatible // indirect
+	firebase.google.com/go/v4 v4.8.0 // indirect
 	github.com/gin-contrib/gzip v0.0.1
 	github.com/gin-gonic/gin v1.7.2
 	github.com/go-playground/validator/v10 v10.8.0
@@ -23,6 +25,7 @@ require (
 	github.com/ugorji/go v1.2.6 // indirect
 	github.com/ziutek/mymysql v1.5.4 // indirect
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d
+	google.golang.org/api v0.73.0 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/stretchr/testify.v1 v1.2.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
