@@ -8,11 +8,11 @@ import (
 
 type User struct {
 	ID         int64          `gorm:"id, primarykey, autoincrement" json:"id"`
-	ExternalID string         `gorn:"user_id" json:"-"`
-	Email      string         `gorm:"email" json:"email"`
-	Name       string         `gorm:"name" json:"name"`
-	Avatar     string         `gorm:"avatar" json:"avatar"`
-	UpdatedAt  time.Time      `gorm:"updated_at" json:"-"`
-	CreatedAt  time.Time      `gorm:"created_at" json:"-"`
+	ExternalID string         `gorm:"index:idx_ext_id,unique" json:"-"`
+	Email      string         `gorm:"unique" json:"email"`
+	Name       string         `json:"name"`
+	Avatar     string         `json:"avatar"`
+	UpdatedAt  time.Time      `json:"-"`
+	CreatedAt  time.Time      `json:"-"`
 	DeletedAt  gorm.DeletedAt `gorm:"index" json:"-"`
 }
