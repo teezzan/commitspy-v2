@@ -16,11 +16,11 @@ func respondWithError(c *gin.Context, code int, message interface{}) {
 }
 
 func AuthenticateToken(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"message": "Successfully Ping"})
 	authToken := fetchAuthToken(c)
 
 	if authToken == "" {
 		respondWithError(c, http.StatusBadRequest, gin.H{"error": "API token required"})
+		c.Abort()
 		return
 	}
 

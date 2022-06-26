@@ -1,8 +1,6 @@
 package routes
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/teezzan/commitspy/controllers"
 	"github.com/teezzan/commitspy/middleware"
@@ -15,8 +13,5 @@ func addUserRoutes(rg *gin.RouterGroup) {
 
 	users.Use(middleware.AuthenticateToken)
 
-	users.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, "users")
-	})
 	users.GET("/ping", user.Ping)
 }
