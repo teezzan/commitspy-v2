@@ -14,4 +14,5 @@ func addUserRoutes(rg *gin.RouterGroup) {
 	users.Use(middleware.AuthenticateToken)
 
 	users.GET("/ping", user.Ping)
+	users.GET("/login", user.CreateOrLogin)
 }

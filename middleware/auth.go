@@ -2,37 +2,38 @@ package middleware
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/teezzan/commitspy/config"
+	"github.com/teezzan/commitspy/controllers"
+	"github.com/teezzan/commitspy/models"
 )
 
 var firebaseAuth = config.FirebaseAuth
-
-func respondWithError(c *gin.Context, code int, message interface{}) {
-	c.AbortWithStatusJSON(code, gin.H{"error": message})
-}
 
 func AuthenticateToken(c *gin.Context) {
 	authToken := fetchAuthToken(c)
 
 	if authToken == "" {
-		respondWithError(c, http.StatusBadRequest, gin.H{"error": "API token required"})
-		c.Abort()
+		controllers.RespondWithError(c, http.StatusBadRequest, gin.H{"error": "API token required"})
 		return
 	}
 
 	token, err := firebaseAuth.VerifyIDToken(context.Background(), authToken)
 
 	if err != nil {
-		respondWithError(c, http.StatusBadRequest, gin.H{"error": "Invalid API token"})
+		controllers.RespondWithError(c, http.StatusBadRequest, gin.H{"error": "Invalid API token"})
 		return
 	}
-	c.Set("User", token.Claims)
-	log.Println(token.Claims["name"])
+	decodedUser := models.ContextualUser{
+		ExternalID: token.UID,
+		Name:       token.Claims["name"].(string),
+		Email:      token.Claims["email"].(string),
+		Avatar:     token.Claims["picture"].(string),
+	}
+	c.Set("User", decodedUser)
 	c.Next()
 }
 

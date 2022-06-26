@@ -7,7 +7,6 @@ import (
 )
 
 type User struct {
-	gorm.Model
 	ID         int64          `gorm:"id, primarykey, autoincrement" json:"id"`
 	ExternalID string         `gorn:"user_id" json:"-"`
 	Email      string         `gorm:"email" json:"email"`
@@ -15,5 +14,5 @@ type User struct {
 	Avatar     string         `gorm:"avatar" json:"avatar"`
 	UpdatedAt  time.Time      `gorm:"updated_at" json:"-"`
 	CreatedAt  time.Time      `gorm:"created_at" json:"-"`
-	DeletedAt  gorm.DeletedAt `gorm:"index"`
+	DeletedAt  gorm.DeletedAt `gorm:"index" json:"-"`
 }
