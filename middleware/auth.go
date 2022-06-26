@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"strings"
 
@@ -30,7 +31,8 @@ func AuthenticateToken(c *gin.Context) {
 		respondWithError(c, http.StatusBadRequest, gin.H{"error": "Invalid API token"})
 		return
 	}
-	c.Set("User", token)
+	c.Set("User", token.Claims)
+	log.Println(token.Claims["name"])
 	c.Next()
 }
 
