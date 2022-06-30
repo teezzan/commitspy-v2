@@ -8,7 +8,8 @@ import (
 
 type Project struct {
 	ID               int64          `gorm:"id, primarykey, autoincrement" json:"id"`
-	ExternalID       string         `gorm:"index:idx_ext_id,unique" json:"-"`
+	ExternalID       string         `gorm:"index:idx_ext_id" json:"-"`
+	URL              string         `gorm:"index:idx_url,unique" json:"url"`
 	Name             string         `json:"name"`
 	Type             int16          `json:"type"`
 	CommitGoal       int64          `json:"commit_goal"`

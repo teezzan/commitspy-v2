@@ -8,6 +8,7 @@ require (
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/gin-gonic/gin v1.7.2
 	github.com/go-playground/validator/v10 v10.8.0 // indirect
+	github.com/google/go-github/v45 v45.2.0 // indirect
 	github.com/google/uuid v1.3.0
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/joho/godotenv v1.4.0
