@@ -9,10 +9,11 @@ import (
 var user = new(controllers.UserController)
 
 func addUserRoutes(rg *gin.RouterGroup) {
-	users := rg.Group("/users")
+	users := rg.Group("/user")
 
 	users.Use(middleware.AuthenticateToken)
 
 	users.GET("/ping", user.Ping)
 	users.GET("/login", user.CreateOrLogin)
+	users.GET("/details", user.GetUser)
 }

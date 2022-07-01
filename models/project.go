@@ -15,6 +15,7 @@ type Project struct {
 	CommitGoal       int64          `json:"commit_goal"`
 	CommitTimeWindow int64          `json:"commit_time_window"`
 	CommitDeadline   time.Time      `json:"commit_deadline"`
+	UserID           int64          `json:"-"`
 	User             User           `json:"-"`
 	UpdatedAt        time.Time      `json:"-"`
 	CreatedAt        time.Time      `json:"-"`

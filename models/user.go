@@ -12,7 +12,7 @@ type User struct {
 	Email      string         `gorm:"unique" json:"email"`
 	Name       string         `json:"name"`
 	Avatar     string         `json:"avatar"`
-	Projects   []Project      `json:"projects"`
+	Projects   []Project      `json:"-"`
 	UpdatedAt  time.Time      `json:"-"`
 	CreatedAt  time.Time      `json:"-"`
 	DeletedAt  gorm.DeletedAt `gorm:"index" json:"-"`
