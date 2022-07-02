@@ -10,11 +10,9 @@ import (
 
 var test *baloo.Client
 
-func init() {
-	test_utils.SetupRouter()
-	test = baloo.New("http://localhost:3000/api")
-}
 func TestPingRoute(t *testing.T) {
+	test_utils.SetupRouter()
+	test = baloo.New("http://localhost:5000/api")
 	Convey("Should return 200 for ping route", t, func() {
 		test.Get("/user/ping").
 			SetHeader("Foo", "Bar").

@@ -26,10 +26,18 @@ type Config struct {
 var Cfg Config
 
 func init() {
-	err := godotenv.Load()
+	// env := os.Getenv("ENV")
+	// if env == "TEST" {
+	err := godotenv.Load(".test.env")
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("Error loading .test.env file")
 	}
+	// } else {
+	// 	err := godotenv.Load(".test.env")
+	// 	if err != nil {
+	// 		log.Fatal("Error loading .env bbfile")
+	// 	}
+	// }
 	Cfg.Server.Port = os.Getenv("PORT")
 	Cfg.Database.Host = os.Getenv("DB_HOST")
 	Cfg.Database.User = os.Getenv("DB_USER")
