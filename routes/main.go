@@ -14,6 +14,11 @@ func Run() {
 	router.Run(":5000")
 }
 
+func LoadRoutesAndReturnRouter() *gin.Engine {
+	getRoutes()
+	return router
+}
+
 func getRoutes() {
 	routerGroup := router.Group("/api")
 

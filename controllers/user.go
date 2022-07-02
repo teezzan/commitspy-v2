@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -13,8 +12,6 @@ var db = database.GetDB()
 type UserController struct{}
 
 func (ctrl UserController) Ping(c *gin.Context) {
-	userCtx := GetCtxUser(c)
-	log.Println(userCtx)
 	c.JSON(http.StatusOK, gin.H{"message": "Ping"})
 }
 

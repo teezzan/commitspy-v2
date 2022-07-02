@@ -10,7 +10,7 @@
 
 # SENSITVE DATA #
 .gitconfig
-.env
+*.env
 cert/
 
 # BUILD #
