@@ -11,9 +11,9 @@ import (
 	"github.com/teezzan/commitspy/models"
 )
 
-var firebaseAuth = config.FirebaseAuth
-
 func AuthenticateToken(c *gin.Context) {
+	firebaseAuthClient := config.GetFirebaseAuthClient()
+
 	authToken := fetchAuthToken(c)
 
 	if authToken == "" {
@@ -21,7 +21,7 @@ func AuthenticateToken(c *gin.Context) {
 		return
 	}
 
-	token, err := firebaseAuth.VerifyIDToken(context.Background(), authToken)
+	token, err := firebaseAuthClient.VerifyIDToken(context.Background(), authToken)
 
 	if err != nil {
 		controllers.RespondWithError(c, http.StatusBadRequest, gin.H{"error": "Invalid API token"})

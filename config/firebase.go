@@ -9,7 +9,7 @@ import (
 	"google.golang.org/api/option"
 )
 
-var FirebaseAuth *auth.Client
+var firebaseAuth *auth.Client
 
 func InitFirebase() {
 
@@ -25,5 +25,9 @@ func InitFirebase() {
 	if err != nil {
 		log.Fatalf("Firebase Auth load error: %v", err)
 	}
-	FirebaseAuth = auth
+	firebaseAuth = auth
+}
+
+func GetFirebaseAuthClient() *auth.Client {
+	return firebaseAuth
 }
