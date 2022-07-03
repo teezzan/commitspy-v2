@@ -15,7 +15,7 @@ var dsn string
 
 func InitDB() {
 	var err error
-	
+
 	dsn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 		config.Cfg.Database.Host,
 		config.Cfg.Database.User,
@@ -29,7 +29,6 @@ func InitDB() {
 	if err != nil {
 		log.Fatal(err)
 	} else {
-		log.Println("Sucessful connection!")
 		MigrateDBModels()
 	}
 }

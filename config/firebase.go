@@ -17,8 +17,6 @@ func InitFirebase() {
 	app, err := firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
 		log.Fatalf("error initializing app: %v", err)
-	} else {
-		log.Println("Successfully initiated Firebase App!")
 	}
 
 	auth, err := app.Auth(context.Background())

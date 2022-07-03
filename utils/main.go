@@ -2,7 +2,6 @@ package utils
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path"
 
@@ -28,7 +27,6 @@ func SetEnviroment(env string) error {
 	}
 
 	filename := fmt.Sprintf("%s.env", env)
-	log.Println("filename ", filename)
 	filepath := searchup(directory, filename)
 
 	if filepath == "" {
@@ -37,5 +35,3 @@ func SetEnviroment(env string) error {
 
 	return godotenv.Load(filepath)
 }
-
-
