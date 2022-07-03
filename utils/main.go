@@ -37,3 +37,5 @@ func SetEnviroment(env string) error {
 
 	return godotenv.Load(filepath)
 }
+
+

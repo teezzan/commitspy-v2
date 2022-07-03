@@ -5,6 +5,7 @@ import (
 )
 
 type Config struct {
+	Env    string
 	Server struct {
 		Port string
 	}
@@ -24,6 +25,7 @@ var Cfg Config
 
 func InitConfig() {
 
+	Cfg.Env = os.Getenv("ENV")
 	Cfg.Server.Port = os.Getenv("PORT")
 	Cfg.Database.Host = os.Getenv("DB_HOST")
 	Cfg.Database.User = os.Getenv("DB_USER")

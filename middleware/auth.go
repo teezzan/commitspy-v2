@@ -9,6 +9,7 @@ import (
 	"github.com/teezzan/commitspy/config"
 	"github.com/teezzan/commitspy/controllers"
 	"github.com/teezzan/commitspy/models"
+	"github.com/teezzan/commitspy/tests/stubs"
 )
 
 func AuthenticateToken(c *gin.Context) {
@@ -20,19 +21,24 @@ func AuthenticateToken(c *gin.Context) {
 		controllers.RespondWithError(c, http.StatusBadRequest, gin.H{"error": "API token required"})
 		return
 	}
+	var decodedUser models.ContextualUser
+	if config.Cfg.Env == "TEST" && authToken == "TestToken"   {
+		decodedUser = stubs.UserStub
+	} else {
+		token, err := firebaseAuthClient.VerifyIDToken(context.Background(), authToken)
 
-	token, err := firebaseAuthClient.VerifyIDToken(context.Background(), authToken)
+		if err != nil {
+			controllers.RespondWithError(c, http.StatusBadRequest, gin.H{"error": "Invalid API token"})
+			return
+		}
+		decodedUser = models.ContextualUser{
+			ExternalID: token.UID,
+			Name:       token.Claims["name"].(string),
+			Email:      token.Claims["email"].(string),
+			Avatar:     token.Claims["picture"].(string),
+		}
+	}
 
-	if err != nil {
-		controllers.RespondWithError(c, http.StatusBadRequest, gin.H{"error": "Invalid API token"})
-		return
-	}
-	decodedUser := models.ContextualUser{
-		ExternalID: token.UID,
-		Name:       token.Claims["name"].(string),
-		Email:      token.Claims["email"].(string),
-		Avatar:     token.Claims["picture"].(string),
-	}
 	c.Set("User", decodedUser)
 	c.Next()
 }
