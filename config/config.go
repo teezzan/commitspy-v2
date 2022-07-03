@@ -3,8 +3,6 @@ package config
 import (
 	"log"
 	"os"
-
-	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -26,18 +24,7 @@ type Config struct {
 var Cfg Config
 
 func init() {
-	// env := os.Getenv("ENV")
-	// if env == "TEST" {
-	err := godotenv.Load(".test.env")
-	if err != nil {
-		log.Fatal("Error loading .test.env file")
-	}
-	// } else {
-	// 	err := godotenv.Load(".test.env")
-	// 	if err != nil {
-	// 		log.Fatal("Error loading .env bbfile")
-	// 	}
-	// }
+
 	Cfg.Server.Port = os.Getenv("PORT")
 	Cfg.Database.Host = os.Getenv("DB_HOST")
 	Cfg.Database.User = os.Getenv("DB_USER")
@@ -45,5 +32,5 @@ func init() {
 	Cfg.Database.Name = os.Getenv("DB_NAME")
 	Cfg.Database.Port = os.Getenv("DB_PORT")
 	Cfg.Firebase.CredentialJSON = os.Getenv("FIREBASE_CREDENTIAL")
-
+	log.Println("CFhhG =", Cfg)
 }
