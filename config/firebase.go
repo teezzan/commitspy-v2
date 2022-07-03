@@ -11,7 +11,7 @@ import (
 
 var FirebaseAuth *auth.Client
 
-func init() {
+func InitFirebase() {
 
 	opt := option.WithCredentialsJSON([]byte(Cfg.Firebase.CredentialJSON))
 	app, err := firebase.NewApp(context.Background(), nil, opt)

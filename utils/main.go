@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path"
 
@@ -26,7 +27,8 @@ func SetEnviroment(env string) error {
 		return err
 	}
 
-	filename := fmt.Sprintf(".env%s", env)
+	filename := fmt.Sprintf("%s.env", env)
+	log.Println("filename ", filename)
 	filepath := searchup(directory, filename)
 
 	if filepath == "" {

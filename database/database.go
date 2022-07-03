@@ -13,7 +13,7 @@ import (
 var db *gorm.DB
 var dsn string
 
-func init() {
+func InitDB() {
 	var err error
 	
 	dsn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",

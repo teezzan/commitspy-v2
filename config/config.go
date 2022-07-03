@@ -1,7 +1,6 @@
 package config
 
 import (
-	"log"
 	"os"
 )
 
@@ -23,7 +22,7 @@ type Config struct {
 
 var Cfg Config
 
-func init() {
+func InitConfig() {
 
 	Cfg.Server.Port = os.Getenv("PORT")
 	Cfg.Database.Host = os.Getenv("DB_HOST")
@@ -32,5 +31,4 @@ func init() {
 	Cfg.Database.Name = os.Getenv("DB_NAME")
 	Cfg.Database.Port = os.Getenv("DB_PORT")
 	Cfg.Firebase.CredentialJSON = os.Getenv("FIREBASE_CREDENTIAL")
-	log.Println("CFhhG =", Cfg)
 }
