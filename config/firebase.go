@@ -19,11 +19,11 @@ func InitFirebase() {
 		log.Fatalf("error initializing app: %v", err)
 	}
 
-	auth, err := app.Auth(context.Background())
+	fbAUth, err := app.Auth(context.Background())
 	if err != nil {
 		log.Fatalf("Firebase Auth load error: %v", err)
 	}
-	firebaseAuth = auth
+	firebaseAuth = fbAUth
 }
 
 func GetFirebaseAuthClient() *auth.Client {
