@@ -1,4 +1,4 @@
-package middleware
+package auth
 
 import (
 	"context"
@@ -7,8 +7,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/teezzan/commitspy/config"
-	"github.com/teezzan/commitspy/controllers"
-	"github.com/teezzan/commitspy/models"
 	"github.com/teezzan/commitspy/tests/stubs"
 )
 
@@ -21,8 +19,8 @@ func AuthenticateToken(c *gin.Context) {
 		controllers.RespondWithError(c, http.StatusBadRequest, gin.H{"error": "API token required"})
 		return
 	}
-	var decodedUser models.ContextualUser
-	if config.Cfg.Env == "TEST" && authToken == "TestToken"   {
+	var decodedUser User
+	if config.Cfg.Env == "TEST" && authToken == "TestToken" {
 		decodedUser = stubs.UserStub
 	} else {
 		token, err := firebaseAuthClient.VerifyIDToken(context.Background(), authToken)
@@ -31,7 +29,7 @@ func AuthenticateToken(c *gin.Context) {
 			controllers.RespondWithError(c, http.StatusBadRequest, gin.H{"error": "Invalid API token"})
 			return
 		}
-		decodedUser = models.ContextualUser{
+		decodedUser = User{
 			ExternalID: token.UID,
 			Name:       token.Claims["name"].(string),
 			Email:      token.Claims["email"].(string),
@@ -39,8 +37,13 @@ func AuthenticateToken(c *gin.Context) {
 		}
 	}
 
-	c.Set("User", decodedUser)
+	c.Set("User", &decodedUser)
 	c.Next()
+}
+
+func UserFromCtx(c *gin.Context) (*User, bool) {
+	userCtxInterface, ok := c.Get("User")
+	return userCtxInterface.(*User), ok
 }
 
 func fetchAuthToken(c *gin.Context) string {
