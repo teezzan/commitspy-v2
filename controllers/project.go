@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/teezzan/commitspy/account"
@@ -49,5 +50,50 @@ func (ctrl Project) Create(c *gin.Context) {
 	}
 
 	response.WriteSuccess(c, http.StatusOK, gin.H{"project": newProject})
+
+}
+
+func (ctrl Project) Update(c *gin.Context) {
+	userCtx, _ := auth.UserFromCtx(c)
+
+	var json validator.UpdateProject
+
+	if err := c.ShouldBindUri(&json); err != nil {
+		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if err := c.ShouldBindJSON(&json); err != nil {
+		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	project, err := database.GetUserProjectById(userCtx.ID, json.ProjectID)
+
+	if err != nil {
+		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if project == nil {
+		response.WriteSuccess(c, http.StatusNotFound, gin.H{"error": "project no found"})
+		return
+	}
+
+	if json.Name != nil {
+		project.Name = *json.Name
+	}
+	if json.CommitGoal != nil {
+		project.CommitGoal = *json.CommitGoal
+	}
+	if json.CommitTimeWindow != nil {
+		project.CommitTimeWindow = *json.CommitTimeWindow
+		nextAlarm := time.Now().Local().Add(time.Hour * time.Duration(*json.CommitTimeWindow))
+		project.CommitDeadline = &nextAlarm
+	}
+	err = database.UpdateProject(project)
+	if err != nil {
+		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	response.WriteSuccess(c, http.StatusAccepted, gin.H{"project": project})
 
 }
