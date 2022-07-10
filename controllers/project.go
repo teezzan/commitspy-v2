@@ -52,7 +52,49 @@ func (ctrl Project) Create(c *gin.Context) {
 	response.WriteSuccess(c, http.StatusOK, gin.H{"project": newProject})
 
 }
+func (ctrl Project) FetchOne(c *gin.Context) {
+	userCtx, _ := auth.UserFromCtx(c)
 
+	var json validator.URIProjectID
+
+	if err := c.ShouldBindUri(&json); err != nil {
+		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	project, err := database.GetUserProjectById(userCtx.ID, json.ProjectID)
+
+	if err != nil {
+		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if project == nil {
+		response.WriteSuccess(c, http.StatusNotFound, gin.H{"error": "project not found"})
+		return
+	}
+
+	response.WriteSuccess(c, http.StatusOK, gin.H{"project": project})
+
+}
+func (ctrl Project) FetchAll(c *gin.Context) {
+	userCtx, _ := auth.UserFromCtx(c)
+
+	projects, err := database.GetUserProjects(userCtx.ID)
+
+	if err != nil {
+		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	var r gin.H
+	if projects == nil {
+		r = gin.H{"projects": make([]string, 0)}
+	} else {
+		r = gin.H{"projects": projects}
+	}
+
+	response.WriteSuccess(c, http.StatusOK, gin.H{"projects": r})
+
+}
 func (ctrl Project) Update(c *gin.Context) {
 	userCtx, _ := auth.UserFromCtx(c)
 
@@ -101,7 +143,7 @@ func (ctrl Project) Update(c *gin.Context) {
 func (ctrl Project) Delete(c *gin.Context) {
 	userCtx, _ := auth.UserFromCtx(c)
 
-	var json validator.DeleteProject
+	var json validator.URIProjectID
 
 	if err := c.ShouldBindUri(&json); err != nil {
 		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})

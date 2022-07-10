@@ -52,3 +52,15 @@ func GetUserProjectById(userId int64, projectId int64) (*account.Project, error)
 	}
 	return &p, nil
 }
+
+func GetUserProjects(userId int64) (*[]account.Project, error) {
+	var p []account.Project
+	result := db.Where(&account.Project{UserID: userId}).Find(&p)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	if result.RowsAffected == 0 {
+		return nil, nil
+	}
+	return &p, nil
+}

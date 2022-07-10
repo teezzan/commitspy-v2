@@ -13,6 +13,6 @@ type UpdateProject struct {
 	CommitTimeWindow *int64  `json:"commit_time_window" binding:"omitempty,min=24"`
 }
 
-type DeleteProject struct {
+type URIProjectID struct {
 	ProjectID int64 `uri:"id" binding:"required"`
 }
