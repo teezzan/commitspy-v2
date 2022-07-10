@@ -10,8 +10,6 @@ import (
 	"github.com/teezzan/commitspy/response"
 )
 
-var db = database.GetDB()
-
 type UserController struct{}
 
 func (ctrl UserController) Ping(c *gin.Context) {
@@ -24,7 +22,7 @@ func (ctrl UserController) CreateOrLogin(c *gin.Context) {
 	user, err := database.GetUserByExternalID(userCtx.ExternalID)
 
 	if err != nil {
-		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": "DB error"})
+		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	if user != nil {
@@ -47,7 +45,6 @@ func (ctrl UserController) CreateOrLogin(c *gin.Context) {
 	}
 
 	response.WriteSuccess(c, http.StatusOK, gin.H{"user": user})
-	return
 
 }
 
@@ -55,7 +52,6 @@ func (ctrl UserController) GetUser(c *gin.Context) {
 	userCtx, _ := auth.UserFromCtx(c)
 
 	user, err := database.GetUserByExternalID(userCtx.ExternalID)
-
 
 	if err != nil {
 		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": "DB error"})
