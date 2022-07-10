@@ -1,4 +1,4 @@
-package test_utils
+package setup
 
 import (
 	"io"
@@ -10,16 +10,16 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/teezzan/commitspy/config"
 	"github.com/teezzan/commitspy/database"
+	"github.com/teezzan/commitspy/env"
 	"github.com/teezzan/commitspy/routes"
-	"github.com/teezzan/commitspy/utils"
 )
 
 func init() {
 	os.Setenv("ENV", "TEST")
 }
 
-func SetupRouter() *gin.Engine {
-	utils.SetEnviroment(".test")
+func Router() *gin.Engine {
+	env.SetEnviroment(".test")
 	config.InitConfig()
 	config.InitFirebase()
 	database.InitDB()
@@ -27,7 +27,7 @@ func SetupRouter() *gin.Engine {
 	return router
 }
 
-func Request(method string, url string, body io.Reader, headers gin.H) (*http.Request, *httptest.ResponseRecorder) {
+func HTTPRequest(method string, url string, body io.Reader, headers gin.H) (*http.Request, *httptest.ResponseRecorder) {
 	w := httptest.NewRecorder()
 	req, err := http.NewRequest("GET", "/api/user/ping", nil)
 	if err != nil {

@@ -6,11 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/assert/v2"
 	. "github.com/smartystreets/goconvey/convey"
-	"github.com/teezzan/commitspy/tests/test_utils"
+	"github.com/teezzan/commitspy/tests/setup"
 )
 
-var router = test_utils.SetupRouter()
-var Request = test_utils.Request
+var router = setup.Router()
+var Request = setup.HTTPRequest
 
 func TestPingRoute(t *testing.T) {
 	Convey("Should return 200 for ping route", t, func() {
