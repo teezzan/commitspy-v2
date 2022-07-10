@@ -10,9 +10,9 @@ func CreateProject(p *account.Project) error {
 
 }
 
-func GetUserProjectByNameOrURL(id string, name string, url string) (*account.Project, error) {
+func GetUserProjectByNameOrURL(id int64, name string, url string) (*account.Project, error) {
 	var p account.Project
-	result := db.Where(&account.Project{ExternalID: id, Name: name}).Or(&account.Project{ExternalID: id, URL: url}).Limit(1).Find(&p)
+	result := db.Where(&account.Project{UserID: id, Name: name}).Or(&account.Project{UserID: id, URL: url}).Limit(1).Find(&p)
 	if result.Error != nil {
 		return nil, result.Error
 	}

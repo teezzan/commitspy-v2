@@ -10,13 +10,13 @@ import (
 	"github.com/teezzan/commitspy/response"
 )
 
-type UserController struct{}
+type User struct{}
 
-func (ctrl UserController) Ping(c *gin.Context) {
+func (ctrl User) Ping(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Ping"})
 }
 
-func (ctrl UserController) CreateOrLogin(c *gin.Context) {
+func (ctrl User) CreateOrLogin(c *gin.Context) {
 	userCtx, _ := auth.UserFromCtx(c)
 
 	user, err := database.GetUserByExternalID(userCtx.ExternalID)
@@ -44,11 +44,11 @@ func (ctrl UserController) CreateOrLogin(c *gin.Context) {
 		return
 	}
 
-	response.WriteSuccess(c, http.StatusOK, gin.H{"user": user})
+	response.WriteSuccess(c, http.StatusOK, gin.H{"user": newUser})
 
 }
 
-func (ctrl UserController) GetUser(c *gin.Context) {
+func (ctrl User) GetUser(c *gin.Context) {
 	userCtx, _ := auth.UserFromCtx(c)
 
 	user, err := database.GetUserByExternalID(userCtx.ExternalID)

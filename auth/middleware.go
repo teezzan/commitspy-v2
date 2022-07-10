@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/teezzan/commitspy/config"
+	"github.com/teezzan/commitspy/database"
 	"github.com/teezzan/commitspy/response"
 )
 
@@ -35,6 +36,12 @@ func AuthenticateToken(c *gin.Context) {
 			Email:      token.Claims["email"].(string),
 			Avatar:     token.Claims["picture"].(string),
 		}
+		user, _ := database.GetUserByExternalID(token.UID)
+
+		if user != nil {
+			decodedUser.ID = user.ID
+		}
+
 	}
 
 	c.Set("User", &decodedUser)

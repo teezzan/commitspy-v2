@@ -12,9 +12,9 @@ import (
 	"github.com/teezzan/commitspy/validator"
 )
 
-type ProjectController struct{}
+type Project struct{}
 
-func (ctrl ProjectController) Create(c *gin.Context) {
+func (ctrl Project) Create(c *gin.Context) {
 	userCtx, _ := auth.UserFromCtx(c)
 	var json validator.CreateProject
 
@@ -23,25 +23,31 @@ func (ctrl ProjectController) Create(c *gin.Context) {
 		return
 	}
 
-	project, err := database.GetUserProjectByNameOrURL(userCtx.ExternalID, json.Name, json.URL)
+	project, err := database.GetUserProjectByNameOrURL(userCtx.ID, json.Name, json.URL)
 
 	if err != nil {
 		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
 	if project != nil {
 		response.WriteSuccess(c, http.StatusConflict,
-			gin.H{"error": fmt.Errorf("project with name %s or url %s exists", json.Name, json.URL)})
+			gin.H{"error": fmt.Sprintf("project with name: %s or url: %s exists", json.Name, json.URL)})
 		return
 	}
 
 	newProject := &account.Project{
-		Name: json.Name,
-		URL:  json.URL,
-		Type: json.Type,
+		Name:   json.Name,
+		URL:    json.URL,
+		Type:   json.Type,
+		UserID: userCtx.ID,
 	}
 
 	err = database.CreateProject(newProject)
+	if err != nil {
+		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	response.WriteSuccess(c, http.StatusOK, gin.H{"project": newProject})
 
 }

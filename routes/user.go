@@ -6,7 +6,7 @@ import (
 	"github.com/teezzan/commitspy/controllers"
 )
 
-var user = new(controllers.UserController)
+var user = new(controllers.User)
 
 func addUserRoutes(rg *gin.RouterGroup) {
 	users := rg.Group("/user")

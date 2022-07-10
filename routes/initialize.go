@@ -23,4 +23,5 @@ func getRoutes() {
 	routerGroup := router.Group("/api")
 
 	addUserRoutes(routerGroup)
+	addProjectRoutes(routerGroup)
 }
