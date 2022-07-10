@@ -74,7 +74,7 @@ func (ctrl Project) Update(c *gin.Context) {
 		return
 	}
 	if project == nil {
-		response.WriteSuccess(c, http.StatusNotFound, gin.H{"error": "project no found"})
+		response.WriteSuccess(c, http.StatusNotFound, gin.H{"error": "project not found"})
 		return
 	}
 
@@ -96,4 +96,33 @@ func (ctrl Project) Update(c *gin.Context) {
 	}
 	response.WriteSuccess(c, http.StatusAccepted, gin.H{"project": project})
 
+}
+
+func (ctrl Project) Delete(c *gin.Context) {
+	userCtx, _ := auth.UserFromCtx(c)
+
+	var json validator.DeleteProject
+
+	if err := c.ShouldBindUri(&json); err != nil {
+		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	project, err := database.GetUserProjectById(userCtx.ID, json.ProjectID)
+
+	if err != nil {
+		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if project == nil {
+		response.WriteSuccess(c, http.StatusNotFound, gin.H{"error": "project not found"})
+		return
+	}
+
+	err = database.DeleteProject(project)
+	if err != nil {
+		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	response.WriteSuccess(c, http.StatusOK, gin.H{})
 }

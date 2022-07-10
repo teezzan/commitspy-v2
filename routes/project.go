@@ -15,4 +15,5 @@ func addProjectRoutes(rg *gin.RouterGroup) {
 
 	projects.GET("/create", project.Create)
 	projects.POST("/:id", project.Update)
+	projects.DELETE("/:id", project.Delete)
 }

@@ -19,6 +19,13 @@ func UpdateProject(p *account.Project) error {
 
 }
 
+func DeleteProject(p *account.Project) error {
+
+	result := db.Delete(p)
+	return result.Error
+
+}
+
 func GetUserProjectByNameOrURL(userId int64, name string, url string) (*account.Project, error) {
 	var p account.Project
 	result := db.Where(&account.Project{UserID: userId, Name: name}).Or(&account.Project{UserID: userId, URL: url}).Limit(1).Find(&p)
