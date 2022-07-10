@@ -9,6 +9,7 @@ import (
 func CreateUser(u *account.User) error {
 	result := db.Create(u)
 	return result.Error
+
 }
 
 func GetUserByExternalID(id string) (*account.User, error) {

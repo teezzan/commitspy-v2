@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/teezzan/commitspy/config"
-	"github.com/teezzan/commitspy/tests/stubs"
+	"github.com/teezzan/commitspy/response"
 )
 
 func AuthenticateToken(c *gin.Context) {
@@ -16,17 +16,17 @@ func AuthenticateToken(c *gin.Context) {
 	authToken := fetchAuthToken(c)
 
 	if authToken == "" {
-		controllers.RespondWithError(c, http.StatusBadRequest, gin.H{"error": "API token required"})
+		response.WriteError(c, http.StatusBadRequest, gin.H{"error": "API token required"})
 		return
 	}
 	var decodedUser User
 	if config.Cfg.Env == "TEST" && authToken == "TestToken" {
-		decodedUser = stubs.UserStub
+		decodedUser = TestUserStub
 	} else {
 		token, err := firebaseAuthClient.VerifyIDToken(context.Background(), authToken)
 
 		if err != nil {
-			controllers.RespondWithError(c, http.StatusBadRequest, gin.H{"error": "Invalid API token"})
+			response.WriteError(c, http.StatusBadRequest, gin.H{"error": "Invalid API token"})
 			return
 		}
 		decodedUser = User{

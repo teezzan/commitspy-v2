@@ -33,34 +33,35 @@ func (ctrl UserController) CreateOrLogin(c *gin.Context) {
 	}
 
 	newUser := &account.User{
-		ExternalID: userDetails.ExternalID,
-		Email:      userDetails.Email,
-		Avatar:     userDetails.Avatar,
-		Name:       userDetails.Name,
+		ExternalID: userCtx.ExternalID,
+		Email:      userCtx.Email,
+		Avatar:     userCtx.Avatar,
+		Name:       userCtx.Name,
 	}
 
-	user, result = database.CreateUser(newUser)
+	err = database.CreateUser(newUser)
 
-	if result.Error != nil {
+	if err != nil {
 		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": "DB error"})
 		return
 	}
-	if result.RowsAffected > 0 {
-		response.WriteSuccess(c, http.StatusOK, gin.H{"user": user})
-		return
-	}
+
+	response.WriteSuccess(c, http.StatusOK, gin.H{"user": user})
+	return
+
 }
 
 func (ctrl UserController) GetUser(c *gin.Context) {
 	userCtx, _ := auth.UserFromCtx(c)
 
-	user, result := GetUserDetails(userCtx.ExternalID)
+	user, err := database.GetUserByExternalID(userCtx.ExternalID)
 
-	if result.Error != nil {
+
+	if err != nil {
 		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": "DB error"})
 		return
 	}
-	if result.RowsAffected > 0 {
+	if user != nil {
 		response.WriteSuccess(c, http.StatusOK, gin.H{"user": user})
 		return
 	} else {

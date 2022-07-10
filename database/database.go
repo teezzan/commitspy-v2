@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/teezzan/commitspy/account"
 	"github.com/teezzan/commitspy/config"
-	"github.com/teezzan/commitspy/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -38,5 +38,5 @@ func GetDB() *gorm.DB {
 }
 
 func MigrateDBModels() {
-	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&account.User{})
 }
