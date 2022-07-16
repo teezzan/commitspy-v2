@@ -2,6 +2,7 @@ package project_test
 
 import (
 	"bytes"
+	"fmt"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -23,6 +24,11 @@ func (suite *ProjectRouteTestSuite) SetupTest() {
 type ProjectDetailsResponse struct {
 	Data struct {
 		Project account.Project
+	}
+}
+type ProjectsDetailsResponse struct {
+	Data struct {
+		Projects []account.Project
 	}
 }
 
@@ -92,6 +98,88 @@ func (suite *ProjectRouteTestSuite) TestProjectCreateRoute() {
 		So(err, ShouldBeNil)
 		So(*statusCode, ShouldEqual, 409)
 
+	})
+}
+
+func (suite *ProjectRouteTestSuite) TestProjectFetchRoute() {
+
+	Convey("Should fetch all projects for specific user", suite.T(), func() {
+		var projectID int
+		Convey("Should create a project for user", func() {
+			var res ProjectDetailsResponse
+
+			error := setup.UserAccount(router)
+			So(error, ShouldBeNil)
+
+			body := []byte(`{
+			"url":"https://github.com/memme/",
+			"name": "Mememe",
+			"type": 1
+			}`)
+
+			statusCode, err := setup.HTTPRequest(router,
+				"POST",
+				"/api/project/create",
+				bytes.NewReader(body),
+				gin.H{"Authorization": "TestToken"},
+				&res)
+
+			So(err, ShouldBeNil)
+			So(*statusCode, ShouldEqual, 201)
+
+			body2 := []byte(`{
+				"url":"https://github.com/body2",
+				"name": "Body2",
+				"type": 2
+				}`)
+
+			statusCode, err = setup.HTTPRequest(router,
+				"POST",
+				"/api/project/create",
+				bytes.NewReader(body2),
+				gin.H{"Authorization": "TestToken"},
+				&res)
+
+			So(err, ShouldBeNil)
+			So(*statusCode, ShouldEqual, 201)
+		})
+
+		Convey("Should fetch projects of specific user", func() {
+			var res ProjectsDetailsResponse
+
+			error := setup.UserAccount(router)
+			So(error, ShouldBeNil)
+
+			statusCode, err := setup.HTTPRequest(router,
+				"GET",
+				"/api/project/",
+				nil,
+				gin.H{"Authorization": "TestToken"},
+				&res)
+
+			So(err, ShouldBeNil)
+			So(*statusCode, ShouldEqual, 200)
+			So(res.Data.Projects, ShouldHaveLength, 2)
+			projectID = int(res.Data.Projects[0].ID)
+			Convey("Should fetch one project of specific user", func() {
+				var res ProjectDetailsResponse
+
+				error := setup.UserAccount(router)
+				So(error, ShouldBeNil)
+
+				statusCode, err := setup.HTTPRequest(router,
+					"GET",
+					fmt.Sprintf("/api/project/%d", projectID),
+					nil,
+					gin.H{"Authorization": "TestToken"},
+					&res)
+
+				So(err, ShouldBeNil)
+				So(*statusCode, ShouldEqual, 200)
+				So(res.Data.Project.ID, ShouldEqual, projectID)
+
+			})
+		})
 
 	})
 }

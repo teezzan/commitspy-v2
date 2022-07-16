@@ -92,7 +92,7 @@ func (ctrl Project) FetchAll(c *gin.Context) {
 		r = gin.H{"projects": projects}
 	}
 
-	response.WriteSuccess(c, http.StatusOK, gin.H{"projects": r})
+	response.WriteSuccess(c, http.StatusOK, r)
 
 }
 func (ctrl Project) Update(c *gin.Context) {
