@@ -1,7 +1,9 @@
 package setup
 
 import (
+	"encoding/json"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -27,9 +29,18 @@ func Router() *gin.Engine {
 	return router
 }
 
-func HTTPRequest(method string, url string, body io.Reader, headers gin.H) (*http.Request, *httptest.ResponseRecorder) {
+type LoginResponse struct {
+	data struct {
+		user struct {
+			avater string
+			email  string
+			name   string
+		}
+	}
+}
+func HTTPRequest(router *gin.Engine, method string, url string, body io.Reader, headers gin.H, target interface{}) (*int, error) {
 	w := httptest.NewRecorder()
-	req, err := http.NewRequest("GET", "/api/user/ping", nil)
+	req, err := http.NewRequest(method, url, body)
 	if err != nil {
 		log.Fatalf("error occured %v", err)
 	}
@@ -38,5 +49,18 @@ func HTTPRequest(method string, url string, body io.Reader, headers gin.H) (*htt
 			req.Header.Set(key, val.(string))
 		}
 	}
-	return req, w
+
+	router.ServeHTTP(w, req)
+
+	res := w.Result()
+	data, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+	if err := json.Unmarshal(data, &target); err != nil {
+		return nil, err
+	}
+	log.Println("unmash:", target)
+	return &(w.Code), nil
+
 }
