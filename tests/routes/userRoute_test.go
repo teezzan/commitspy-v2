@@ -30,22 +30,17 @@ type UserDetailsResponse struct {
 }
 
 var router = setup.Router()
-var Request = setup.HTTPRequest
 
-func (suite *UserRouteTestSuite) TestPingRoute() {
-	Convey("Should return 200 for ping route", suite.T(), func() {
-		var res map[string]interface{}
-
-		statusCode, err := Request(router, "GET", "/api/user/ping", nil,
-			gin.H{"Authorization": "TestToken"}, &res)
+func (suite *UserRouteTestSuite) TestMissingToken() {
+	Convey("Should return 400 for missing token", suite.T(), func() {
+		var res interface{}
+		statusCode, err := setup.HTTPRequest(router, "GET", "/api/user/ping", nil,
+			nil, &res)
 
 		if err != nil {
 			panic(err)
 		}
-
-		So(*statusCode, ShouldEqual, 200)
-		So(res["message"], ShouldEqual, "Ping")
-
+		So(*statusCode, ShouldEqual, 400)
 	})
 }
 
@@ -54,7 +49,7 @@ func (suite *UserRouteTestSuite) TestCreateOrLoginUser() {
 
 		var res UserDetailsResponse
 
-		statusCode, err := Request(router, "GET", "/api/user/login", nil,
+		statusCode, err := setup.HTTPRequest(router, "GET", "/api/user/login", nil,
 			gin.H{"Authorization": "TestToken"}, &res)
 
 		if err != nil {
@@ -67,7 +62,7 @@ func (suite *UserRouteTestSuite) TestCreateOrLoginUser() {
 
 		var res2 UserDetailsResponse
 
-		statusCode, err = Request(router, "GET", "/api/user/login", nil,
+		statusCode, err = setup.HTTPRequest(router, "GET", "/api/user/login", nil,
 			gin.H{"Authorization": "TestToken"}, &res2)
 
 		if err != nil {
@@ -88,7 +83,7 @@ func (suite *UserRouteTestSuite) TestGetUserDetails() {
 
 		var res UserDetailsResponse
 
-		statusCode, err := Request(router, "GET", "/api/user/details", nil,
+		statusCode, err := setup.HTTPRequest(router, "GET", "/api/user/details", nil,
 			gin.H{"Authorization": "TestToken"}, &res)
 
 		if err != nil {
@@ -106,7 +101,7 @@ func (suite *UserRouteTestSuite) TestGetUserDetails() {
 	Convey("Should not return details for unauthorised user", suite.T(), func() {
 		var res UserDetailsResponse
 
-		statusCode, err := Request(router, "GET", "/api/user/details", nil,
+		statusCode, err := setup.HTTPRequest(router, "GET", "/api/user/details", nil,
 			gin.H{"Authorization": "TestToken"}, &res)
 
 		if err != nil {
