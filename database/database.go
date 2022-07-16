@@ -33,12 +33,15 @@ func InitDB() {
 	}
 }
 
-func GetDB() *gorm.DB {
+func _() *gorm.DB {
 	return db
 }
 
 func MigrateDBModels() {
-	db.AutoMigrate(&account.User{}, &account.Project{})
+	err := db.AutoMigrate(&account.User{}, &account.Project{})
+	if err != nil {
+		return
+	}
 }
 
 func DropUserTable() {
