@@ -17,11 +17,17 @@ import (
 )
 
 func init() {
-	os.Setenv("ENV", "TEST")
+	err := os.Setenv("ENV", "TEST")
+	if err != nil {
+		return
+	}
 }
 
 func Router() *gin.Engine {
-	env.SetEnviroment(".test")
+	err := env.SetEnviroment(".test")
+	if err != nil {
+		return nil
+	}
 	config.InitConfig()
 	config.InitFirebase()
 	database.InitDB()
@@ -38,6 +44,7 @@ type LoginResponse struct {
 		}
 	}
 }
+
 func HTTPRequest(router *gin.Engine, method string, url string, body io.Reader, headers gin.H, target interface{}) (*int, error) {
 	w := httptest.NewRecorder()
 	req, err := http.NewRequest(method, url, body)

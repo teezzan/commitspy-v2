@@ -11,7 +11,10 @@ var (
 // Run will start the server
 func Run() {
 	getRoutes()
-	router.Run(":5000")
+	err := router.Run(":5000")
+	if err != nil {
+		return
+	}
 }
 
 func LoadRoutesAndReturnRouter() *gin.Engine {

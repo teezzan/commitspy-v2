@@ -8,7 +8,10 @@ import (
 )
 
 func main() {
-	env.SetEnviroment("")
+	err := env.SetEnviroment("")
+	if err != nil {
+		return
+	}
 	config.InitConfig()
 	config.InitFirebase()
 	database.InitDB()
