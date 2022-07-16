@@ -49,7 +49,7 @@ func (ctrl Project) Create(c *gin.Context) {
 		return
 	}
 
-	response.WriteSuccess(c, http.StatusOK, gin.H{"project": newProject})
+	response.WriteSuccess(c, http.StatusCreated, gin.H{"project": newProject})
 
 }
 func (ctrl Project) FetchOne(c *gin.Context) {
