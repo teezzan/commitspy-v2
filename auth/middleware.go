@@ -23,6 +23,11 @@ func AuthenticateToken(c *gin.Context) {
 	var decodedUser User
 	if config.Cfg.Env == "TEST" && authToken == "TestToken" {
 		decodedUser = TestUserStub
+		user, _ := database.GetUserByExternalID(decodedUser.ExternalID)
+
+		if user != nil {
+			decodedUser.ID = user.ID
+		}
 	} else {
 		token, err := firebaseAuthClient.VerifyIDToken(context.Background(), authToken)
 
