@@ -2,15 +2,12 @@ package setup
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/teezzan/commitspy/account"
 )
 
 type UserDetailsResponse struct {
 	Data struct {
-		User struct {
-			Avatar string
-			Email  string
-			Name   string
-		}
+		User account.User
 	}
 }
 
