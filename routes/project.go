@@ -14,7 +14,7 @@ func addProjectRoutes(rg *gin.RouterGroup) {
 	projects.Use(auth.AuthenticateToken)
 
 	projects.GET("/", project.FetchAll)
-	projects.POST("/", project.Create)
+	projects.POST("/create", project.Create)
 	projects.GET("/:id", project.FetchOne)
 	projects.POST("/:id", project.Update)
 	projects.DELETE("/:id", project.Delete)

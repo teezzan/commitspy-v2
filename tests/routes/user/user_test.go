@@ -1,4 +1,4 @@
-package routes_test
+package user_test
 
 import (
 	"testing"
@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	. "github.com/smartystreets/goconvey/convey"
 	"github.com/stretchr/testify/suite"
+	"github.com/teezzan/commitspy/account"
 	"github.com/teezzan/commitspy/auth"
 	"github.com/teezzan/commitspy/database"
 	"github.com/teezzan/commitspy/tests/setup"
@@ -17,15 +18,12 @@ type UserRouteTestSuite struct {
 
 func (suite *UserRouteTestSuite) SetupTest() {
 	database.DropUserTable()
+	database.DropProjectTable()
 }
 
 type UserDetailsResponse struct {
 	Data struct {
-		User struct {
-			Avatar string
-			Email  string
-			Name   string
-		}
+		User account.User
 	}
 }
 
@@ -95,7 +93,7 @@ func (suite *UserRouteTestSuite) TestGetUserDetails() {
 		So(res.Data.User.Email, ShouldEqual, auth.TestUserStub.Email)
 
 	})
-	
+
 	database.DropUserTable()
 
 	Convey("Should not return details for unauthorised user", suite.T(), func() {
@@ -112,6 +110,7 @@ func (suite *UserRouteTestSuite) TestGetUserDetails() {
 	})
 
 }
+
 func TestUserRouteSuite(t *testing.T) {
 	suite.Run(t, new(UserRouteTestSuite))
 }
