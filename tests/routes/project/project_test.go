@@ -53,6 +53,6 @@ func (suite *ProjectRouteTestSuite) TestProjectCreateRoute() {
 		So(res.Data.Project.Type, ShouldEqual, 1)
 	})
 }
-func TestUserRouteSuite(t *testing.T) {
+func TestProjectRouteSuite(t *testing.T) {
 	suite.Run(t, new(ProjectRouteTestSuite))
 }
