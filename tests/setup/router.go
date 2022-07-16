@@ -60,7 +60,7 @@ func HTTPRequest(router *gin.Engine, method string, url string, body io.Reader, 
 	if err := json.Unmarshal(data, &target); err != nil {
 		return nil, err
 	}
-	log.Println("unmash:", target)
+	// log.Println("unmash:", target)
 	return &(w.Code), nil
 
 }

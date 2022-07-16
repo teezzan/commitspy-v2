@@ -44,7 +44,7 @@ func (ctrl User) CreateOrLogin(c *gin.Context) {
 		return
 	}
 
-	response.WriteSuccess(c, http.StatusOK, gin.H{"user": newUser})
+	response.WriteSuccess(c, http.StatusCreated, gin.H{"user": newUser})
 
 }
 

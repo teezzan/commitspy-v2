@@ -40,3 +40,11 @@ func GetDB() *gorm.DB {
 func MigrateDBModels() {
 	db.AutoMigrate(&account.User{}, &account.Project{})
 }
+
+func DropUserTable() {
+	db.Exec("DELETE FROM users")
+}
+
+func DropProjectTable() {
+	db.Exec("DELETE FROM projects")
+}
