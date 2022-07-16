@@ -34,7 +34,8 @@ func (suite *ProjectRouteTestSuite) TestProjectCreateRoute() {
 
 		var res ProjectDetailsResponse
 
-		setup.UserAccount(router)
+		error := setup.UserAccount(router)
+		So(error, ShouldBeNil)
 
 		body := []byte(`{
 			"url":"https://github.com/memme/",
@@ -42,8 +43,12 @@ func (suite *ProjectRouteTestSuite) TestProjectCreateRoute() {
 			"type": 1
 			}`)
 
-		statusCode, err := setup.HTTPRequest(router, "POST", "/api/project/create", bytes.NewReader(body),
-			gin.H{"Authorization": "TestToken"}, &res)
+		statusCode, err := setup.HTTPRequest(router,
+			"POST",
+			"/api/project/create",
+			bytes.NewReader(body),
+			gin.H{"Authorization": "TestToken"},
+			&res)
 
 		So(err, ShouldBeNil)
 		So(*statusCode, ShouldEqual, 201)
@@ -51,6 +56,43 @@ func (suite *ProjectRouteTestSuite) TestProjectCreateRoute() {
 		So(res.Data.Project.URL, ShouldEqual, "https://github.com/memme/")
 		So(res.Data.Project.Name, ShouldEqual, "Mememe")
 		So(res.Data.Project.Type, ShouldEqual, 1)
+	})
+
+	database.DropProjectTable()
+
+	Convey("Should prevent duplicate project creation", suite.T(), func() {
+
+		var res ProjectDetailsResponse
+
+		body := []byte(`{
+			"url":"https://github.com/memme/",
+			"name": "Mememe",
+			"type": 1
+			}`)
+
+		statusCode, err := setup.HTTPRequest(router,
+			"POST",
+			"/api/project/create",
+			bytes.NewReader(body),
+			gin.H{"Authorization": "TestToken"},
+			&res)
+
+		So(err, ShouldBeNil)
+		So(*statusCode, ShouldEqual, 201)
+
+		var res2 map[string]interface{}
+
+		statusCode, err = setup.HTTPRequest(router,
+			"POST",
+			"/api/project/create",
+			bytes.NewReader(body),
+			gin.H{"Authorization": "TestToken"},
+			&res2)
+
+		So(err, ShouldBeNil)
+		So(*statusCode, ShouldEqual, 409)
+
+
 	})
 }
 func TestProjectRouteSuite(t *testing.T) {

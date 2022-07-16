@@ -13,14 +13,15 @@ type UserDetailsResponse struct {
 
 var Request = HTTPRequest
 
-func UserAccount(router *gin.Engine) {
+func UserAccount(router *gin.Engine) *error {
 	var res UserDetailsResponse
 
 	statusCode, err := Request(router, "GET", "/api/user/login", nil,
 		gin.H{"Authorization": "TestToken"}, &res)
 
-	if err != nil || *statusCode != 201 {
-		panic(err)
-	}
+	if (err != nil) || ((*statusCode != 200) && (*statusCode != 201)) {
 
+		return &err
+	}
+	return nil
 }

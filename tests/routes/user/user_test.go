@@ -18,7 +18,6 @@ type UserRouteTestSuite struct {
 
 func (suite *UserRouteTestSuite) SetupTest() {
 	database.DropUserTable()
-	database.DropProjectTable()
 }
 
 type UserDetailsResponse struct {
@@ -77,7 +76,8 @@ func (suite *UserRouteTestSuite) TestCreateOrLoginUser() {
 func (suite *UserRouteTestSuite) TestGetUserDetails() {
 	Convey("Should return user details", suite.T(), func() {
 
-		setup.UserAccount(router)
+		error := setup.UserAccount(router)
+		So(error, ShouldBeNil)
 
 		var res UserDetailsResponse
 
