@@ -1,7 +1,8 @@
-# CommitSpy
-
+# CommitSpy V2
 ## Laziness for the good of humanity.
 ![Logo](./images/commitspy.png)
+
+### [Version 1 found here](https://commitspy.netlify.app/)
 
 >**CommitSpy** allows you to do the following
 
