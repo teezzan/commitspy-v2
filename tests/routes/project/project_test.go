@@ -8,9 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 	. "github.com/smartystreets/goconvey/convey"
 	"github.com/stretchr/testify/suite"
-	"github.com/teezzan/commitspy/account"
-	"github.com/teezzan/commitspy/database"
-	"github.com/teezzan/commitspy/tests/setup"
+	"github.com/teezzan/commitspy-v2/account"
+	"github.com/teezzan/commitspy-v2/database"
+	"github.com/teezzan/commitspy-v2/tests/setup"
 )
 
 type ProjectRouteTestSuite struct {

@@ -10,10 +10,10 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/teezzan/commitspy/config"
-	"github.com/teezzan/commitspy/database"
-	"github.com/teezzan/commitspy/env"
-	"github.com/teezzan/commitspy/routes"
+	"github.com/teezzan/commitspy-v2/config"
+	"github.com/teezzan/commitspy-v2/database"
+	"github.com/teezzan/commitspy-v2/env"
+	"github.com/teezzan/commitspy-v2/routes"
 )
 
 func init() {

@@ -30,7 +30,7 @@ If you are considering the first two options of deployment, you would need to ha
 
 Foremost, you have to clone this repository and install all the dependencies with the following commands.
 ```bash
-git clone https://github.com/teezzan/commitspy-v2.git
+git clone https://github.com/teezzan/commitspy-v2-v2.git
 cd commitspy-v2
 go get
 

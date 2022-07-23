@@ -4,10 +4,10 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/teezzan/commitspy/account"
-	"github.com/teezzan/commitspy/auth"
-	"github.com/teezzan/commitspy/database"
-	"github.com/teezzan/commitspy/response"
+	"github.com/teezzan/commitspy-v2/account"
+	"github.com/teezzan/commitspy-v2/auth"
+	"github.com/teezzan/commitspy-v2/database"
+	"github.com/teezzan/commitspy-v2/response"
 )
 
 type User struct{}

@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/teezzan/commitspy/config"
-	"github.com/teezzan/commitspy/database"
-	"github.com/teezzan/commitspy/response"
+	"github.com/teezzan/commitspy-v2/config"
+	"github.com/teezzan/commitspy-v2/database"
+	"github.com/teezzan/commitspy-v2/response"
 )
 
 func AuthenticateToken(c *gin.Context) {

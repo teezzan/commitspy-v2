@@ -1,4 +1,4 @@
-module github.com/teezzan/commitspy
+module github.com/teezzan/commitspy-v2
 
 go 1.14
 
@@ -7,6 +7,7 @@ require (
 	cloud.google.com/go/storage v1.21.0 // indirect
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/gin-gonic/gin v1.7.2
+	github.com/go-playground/assert/v2 v2.0.1 // indirect
 	github.com/go-playground/validator/v10 v10.8.0 // indirect
 	github.com/google/go-cmp v0.5.8 // indirect
 	github.com/google/uuid v1.3.0

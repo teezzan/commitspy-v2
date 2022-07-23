@@ -3,7 +3,7 @@ package database
 import (
 	"fmt"
 
-	"github.com/teezzan/commitspy/account"
+	"github.com/teezzan/commitspy-v2/account"
 )
 
 func CreateUser(u *account.User) error {

@@ -2,7 +2,7 @@ package setup
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/teezzan/commitspy/account"
+	"github.com/teezzan/commitspy-v2/account"
 )
 
 type UserDetailsResponse struct {

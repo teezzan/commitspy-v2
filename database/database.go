@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/teezzan/commitspy/account"
-	"github.com/teezzan/commitspy/config"
+	"github.com/teezzan/commitspy-v2/account"
+	"github.com/teezzan/commitspy-v2/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
