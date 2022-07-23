@@ -183,6 +183,102 @@ func (suite *ProjectRouteTestSuite) TestProjectFetchRoute() {
 
 	})
 }
+
+func (suite *ProjectRouteTestSuite) TestProjectUpdateRoute() {
+
+	Convey("Should edit one project of specific user", suite.T(), func() {
+
+		var res ProjectDetailsResponse
+
+		error := setup.UserAccount(router)
+		So(error, ShouldBeNil)
+
+		body := []byte(`{
+				"url":"https://github.com/memme/",
+				"name": "Mememe",
+				"type": 1
+				}`)
+
+		statusCode, err := setup.HTTPRequest(router,
+			"POST",
+			"/api/project/create",
+			bytes.NewReader(body),
+			gin.H{"Authorization": "TestToken"},
+			&res)
+
+		So(err, ShouldBeNil)
+		So(*statusCode, ShouldEqual, 201)
+		projectID := res.Data.Project.ID
+
+		var res2 ProjectDetailsResponse
+
+		body = []byte(`{
+				"name": "Mememe Again"
+				}`)
+
+		error = setup.UserAccount(router)
+		So(error, ShouldBeNil)
+
+		statusCode, err = setup.HTTPRequest(router,
+			"POST",
+			fmt.Sprintf("/api/project/%d", projectID),
+			bytes.NewReader(body),
+			gin.H{"Authorization": "TestToken"},
+			&res2)
+
+		So(err, ShouldBeNil)
+		So(*statusCode, ShouldEqual, 202)
+		So(res2.Data.Project.ID, ShouldEqual, projectID)
+
+	})
+
+}
+
+func (suite *ProjectRouteTestSuite) TestProjectDeleteRoute() {
+
+	Convey("Should delete one project of specific user", suite.T(), func() {
+
+		var res ProjectDetailsResponse
+
+		error := setup.UserAccount(router)
+		So(error, ShouldBeNil)
+
+		body := []byte(`{
+				"url":"https://github.com/memme/",
+				"name": "Mememe",
+				"type": 1
+				}`)
+
+		statusCode, err := setup.HTTPRequest(router,
+			"POST",
+			"/api/project/create",
+			bytes.NewReader(body),
+			gin.H{"Authorization": "TestToken"},
+			&res)
+
+		So(err, ShouldBeNil)
+		So(*statusCode, ShouldEqual, 201)
+		projectID := res.Data.Project.ID
+
+		var res2 ProjectDetailsResponse
+
+		error = setup.UserAccount(router)
+		So(error, ShouldBeNil)
+
+		statusCode, err = setup.HTTPRequest(router,
+			"DELETE",
+			fmt.Sprintf("/api/project/%d", projectID),
+			nil,
+			gin.H{"Authorization": "TestToken"},
+			&res2)
+
+		So(err, ShouldBeNil)
+		So(*statusCode, ShouldEqual, 200)
+
+	})
+
+}
+
 func TestProjectRouteSuite(t *testing.T) {
 	suite.Run(t, new(ProjectRouteTestSuite))
 }
