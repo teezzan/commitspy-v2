@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/teezzan/commitspy-v2/account"
 )
@@ -46,6 +47,29 @@ func GetUserProjectById(userId int64, projectId int64) (*account.Project, error)
 	}
 	if result.RowsAffected > 1 {
 		return nil, fmt.Errorf("expected 1 match for project Id %d: found %d matches", projectId, result.RowsAffected)
+	}
+	if result.RowsAffected == 0 {
+		return nil, nil
+	}
+	return &p, nil
+}
+
+func GetProjectByUUID(projectUUID string) (*account.Project, error) {
+	var p account.Project
+
+	uuid, err := strconv.ParseInt(projectUUID, 10, 64)
+
+	if err != nil {
+		return nil, err
+	}
+
+	result := db.Where(&account.Project{ID: uuid}).Limit(1).Find(&p)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	if result.RowsAffected > 1 {
+		return nil,
+			fmt.Errorf("expected 1 match for project Id %s: found %d matches", projectUUID, result.RowsAffected)
 	}
 	if result.RowsAffected == 0 {
 		return nil, nil
