@@ -1,8 +1,6 @@
-package stubs
+package auth
 
-import "github.com/teezzan/commitspy/models"
-
-var UserStub = models.ContextualUser{
+var TestUserStub = User{
 	ExternalID: "EBJujdoBjUEkcsUTIzeVXTa5DHC3",
 	Name:       "Test User",
 	Email:      "test@commitspy.com",

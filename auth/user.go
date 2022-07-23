@@ -1,6 +1,7 @@
-package models
+package auth
 
-type ContextualUser struct {
+type User struct {
+	ID         int64
 	Name       string
 	ExternalID string
 	Email      string

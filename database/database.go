@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/teezzan/commitspy/account"
 	"github.com/teezzan/commitspy/config"
-	"github.com/teezzan/commitspy/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -33,10 +33,21 @@ func InitDB() {
 	}
 }
 
-func GetDB() *gorm.DB {
+func _() *gorm.DB {
 	return db
 }
 
 func MigrateDBModels() {
-	db.AutoMigrate(&models.User{})
+	err := db.AutoMigrate(&account.User{}, &account.Project{})
+	if err != nil {
+		return
+	}
+}
+
+func DropUserTable() {
+	db.Exec("DELETE FROM users")
+}
+
+func DropProjectTable() {
+	db.Exec("DELETE FROM projects")
 }

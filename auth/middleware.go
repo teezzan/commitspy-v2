@@ -1,4 +1,4 @@
-package middleware
+package auth
 
 import (
 	"context"
@@ -7,9 +7,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/teezzan/commitspy/config"
-	"github.com/teezzan/commitspy/controllers"
-	"github.com/teezzan/commitspy/models"
-	"github.com/teezzan/commitspy/tests/stubs"
+	"github.com/teezzan/commitspy/database"
+	"github.com/teezzan/commitspy/response"
 )
 
 func AuthenticateToken(c *gin.Context) {
@@ -18,29 +17,45 @@ func AuthenticateToken(c *gin.Context) {
 	authToken := fetchAuthToken(c)
 
 	if authToken == "" {
-		controllers.RespondWithError(c, http.StatusBadRequest, gin.H{"error": "API token required"})
+		response.WriteError(c, http.StatusBadRequest, gin.H{"error": "API token required"})
 		return
 	}
-	var decodedUser models.ContextualUser
-	if config.Cfg.Env == "TEST" && authToken == "TestToken"   {
-		decodedUser = stubs.UserStub
+	var decodedUser User
+	if config.Cfg.Env == "TEST" && authToken == "TestToken" {
+		decodedUser = TestUserStub
+		user, _ := database.GetUserByExternalID(decodedUser.ExternalID)
+
+		if user != nil {
+			decodedUser.ID = user.ID
+		}
 	} else {
 		token, err := firebaseAuthClient.VerifyIDToken(context.Background(), authToken)
 
 		if err != nil {
-			controllers.RespondWithError(c, http.StatusBadRequest, gin.H{"error": "Invalid API token"})
+			response.WriteError(c, http.StatusBadRequest, gin.H{"error": "Invalid API token"})
 			return
 		}
-		decodedUser = models.ContextualUser{
+		decodedUser = User{
 			ExternalID: token.UID,
 			Name:       token.Claims["name"].(string),
 			Email:      token.Claims["email"].(string),
 			Avatar:     token.Claims["picture"].(string),
 		}
+		user, _ := database.GetUserByExternalID(token.UID)
+
+		if user != nil {
+			decodedUser.ID = user.ID
+		}
+
 	}
 
-	c.Set("User", decodedUser)
+	c.Set("User", &decodedUser)
 	c.Next()
+}
+
+func UserFromCtx(c *gin.Context) (*User, bool) {
+	userCtxInterface, ok := c.Get("User")
+	return userCtxInterface.(*User), ok
 }
 
 func fetchAuthToken(c *gin.Context) string {
