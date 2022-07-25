@@ -38,7 +38,7 @@ func _() *gorm.DB {
 }
 
 func MigrateDBModels() {
-	err := db.AutoMigrate(&account.User{}, &account.Project{})
+	err := db.AutoMigrate(&account.User{}, &account.Project{}, &account.Commit{})
 	if err != nil {
 		return
 	}

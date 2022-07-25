@@ -5,9 +5,11 @@ import (
 	"github.com/teezzan/commitspy-v2/webhook"
 )
 
-func addWebhookRoutes(rg *gin.RouterGroup) {
-	webhooks := rg.Group("/webhooks")
+var webhookHandler = new(webhook.EventHandlers)
 
-	webhooks.Use(webhook.AuthenticateGithubWebhook)
-	webhooks.POST("/gh/:uuid", user.Ping)
+func addWebhookRoutes(rg *gin.RouterGroup) {
+	wroute := rg.Group("/webhooks")
+
+	wroute.Use(webhook.AuthenticateGithubWebhook)
+	wroute.POST("/gh/:uuid", webhookHandler.Github)
 }

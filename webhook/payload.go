@@ -9,4 +9,5 @@ type GithubEventData struct {
 type GithubCommit struct {
 	Distinct bool   `json:"distinct"`
 	Message  string `json:"message"`
+	ExtID  string `json:"id"`
 }

@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/teezzan/commitspy-v2/account"
 	"github.com/teezzan/commitspy-v2/database"
 	"github.com/teezzan/commitspy-v2/response"
 	"github.com/teezzan/commitspy-v2/validator"
@@ -47,7 +48,7 @@ func AuthenticateGithubWebhook(c *gin.Context) {
 		return
 	}
 
-	c.Set("evtData", &evtData)
+	c.Set("evtData", evtData)
 
 	project, err := database.GetProjectByUUID(json.ProjectUUID)
 
@@ -60,7 +61,7 @@ func AuthenticateGithubWebhook(c *gin.Context) {
 		return
 	}
 
-	c.Set("Project", &project)
+	c.Set("Project", project)
 
 	c.Next()
 }
@@ -76,6 +77,16 @@ func fetchSHA256Token(c *gin.Context) string {
 	s := c.GetHeader("x-hub-signature-256")
 	sha256Signature := strings.TrimSpace(strings.Replace(s, "sha256=", "", 1))
 	return sha256Signature
+}
+
+func ProjectFromCtx(c *gin.Context) (*account.Project, bool) {
+	pCtx, ok := c.Get("Project")
+	return pCtx.(*account.Project), ok
+}
+
+func GithubEventDataFromCtx(c *gin.Context) (*GithubEventData, bool) {
+	evtCtx, ok := c.Get("evtData")
+	return evtCtx.(*GithubEventData), ok
 }
 
 func parseGithubPayload(jsonBody *string, evtType string) (*GithubEventData, error) {
