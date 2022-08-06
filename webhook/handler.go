@@ -37,7 +37,6 @@ func (ctrl EventHandlers) Github(c *gin.Context) {
 		for _, commit := range evtDataCtx.Commits {
 			if commit.Distinct {
 				newCommit.Number += 1
-				newCommit.ExternalIDs = append(newCommit.ExternalIDs, commit.ExtID)
 			}
 		}
 
@@ -84,7 +83,6 @@ func (ctrl EventHandlers) Gitlab(c *gin.Context) {
 					strings.Contains(commit.Message, "See merge request ")
 			if !isMergeCommit {
 				newCommit.Number += 1
-				newCommit.ExternalIDs = append(newCommit.ExternalIDs, commit.ExtID)
 			}
 		}
 
