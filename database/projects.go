@@ -50,6 +50,10 @@ func GetUserProjectById(userId int64, projectId string) (*account.Project, error
 	if result.RowsAffected == 0 {
 		return nil, nil
 	}
+
+	commits, _ := GetCurrentCommitCohort(&p)
+	fmt.Println(commits)
+
 	return &p, nil
 }
 
