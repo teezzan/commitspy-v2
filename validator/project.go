@@ -7,12 +7,12 @@ type CreateProject struct {
 }
 
 type UpdateProject struct {
-	ProjectID        int64   `uri:"id" binding:"required"`
+	ProjectID        string   `uri:"id" binding:"required"`
 	Name             *string `json:"name" binding:"omitempty"`
 	CommitGoal       *int64  `json:"commit_goal" binding:"omitempty,min=1"`
 	CommitTimeWindow *int64  `json:"commit_time_window" binding:"omitempty,min=24"`
 }
 
 type URIProjectID struct {
-	ProjectID int64 `uri:"id" binding:"required"`
+	ProjectID string `uri:"id" binding:"required"`
 }

@@ -1,8 +1,6 @@
 package database
 
 import (
-	"strconv"
-
 	"github.com/teezzan/commitspy-v2/account"
 )
 
@@ -19,16 +17,10 @@ func UpdateCommit(c *account.Commit) error {
 
 }
 
-func GetCommitsByProjectUUID(projectUUID string) (*[]account.Commit, error) {
+func GetCommitsByProjectUUID(projectID string) (*[]account.Commit, error) {
 	var c []account.Commit
 
-	uuid, err := strconv.ParseInt(projectUUID, 10, 64)
-
-	if err != nil {
-		return nil, err
-	}
-
-	result := db.Where(&account.Commit{ProjectID: uuid}).Find(&c)
+	result := db.Where(&account.Commit{ProjectID: projectID}).Find(&c)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -38,16 +30,10 @@ func GetCommitsByProjectUUID(projectUUID string) (*[]account.Commit, error) {
 	return &c, nil
 }
 
-func CountCommitsByProjectUUID(projectUUID string) (*int64, error) {
+func CountCommitsByProjectUUID(projectID string) (*int64, error) {
 	var count int64
 
-	uuid, err := strconv.ParseInt(projectUUID, 10, 64)
-
-	if err != nil {
-		return nil, err
-	}
-
-	result := db.Model(&account.Commit{}).Where("project_id", uuid).Count(&count)
+	result := db.Model(&account.Commit{}).Where("project_id", projectID).Count(&count)
 	if result.Error != nil {
 		return nil, result.Error
 	}

@@ -3,11 +3,12 @@ package account
 import (
 	"time"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type Project struct {
-	ID               int64          `gorm:"id, primarykey, autoincrement" json:"id"`
+	ID               string         `gorm:"id, primarykey" json:"id"`
 	ExternalID       string         `gorm:"index:idx_ext_id" json:"-"`
 	URL              string         `gorm:"index:idx_url,unique" json:"url"`
 	Name             string         `json:"name"`
@@ -20,4 +21,9 @@ type Project struct {
 	UpdatedAt        time.Time      `json:"-"`
 	CreatedAt        time.Time      `json:"-"`
 	DeletedAt        gorm.DeletedAt `gorm:"index" json:"-"`
+}
+
+func (p *Project) BeforeCreate(tx *gorm.DB) (err error) {
+	p.ID = uuid.NewString()
+	return
 }
