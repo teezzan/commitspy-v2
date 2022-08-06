@@ -8,8 +8,7 @@ import (
 var webhookHandler = new(webhook.EventHandlers)
 
 func addWebhookRoutes(rg *gin.RouterGroup) {
-	wroute := rg.Group("/webhooks")
+	route := rg.Group("/webhooks")
 
-	wroute.Use(webhook.AuthenticateGithubWebhook)
-	wroute.POST("/gh/:uuid", webhookHandler.Github)
+	route.POST("/gh/:uuid", webhook.AuthenticateGithubWebhook, webhookHandler.Github)
 }

@@ -19,9 +19,9 @@ import (
 
 func AuthenticateGithubWebhook(c *gin.Context) {
 
-	var json validator.URIProjectUUID
+	var jsonPayload validator.URIProjectUUID
 
-	if err := c.ShouldBindUri(&json); err != nil {
+	if err := c.ShouldBindUri(&jsonPayload); err != nil {
 		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -34,7 +34,7 @@ func AuthenticateGithubWebhook(c *gin.Context) {
 		return
 	}
 	jsonString := string(jsonData)
-	isValidRequest := requestSHA256Validator(json.ProjectUUID, jsonString, sha256Signature)
+	isValidRequest := requestSHA256Validator(jsonPayload.ProjectUUID, jsonString, sha256Signature)
 
 	if !isValidRequest {
 		response.WriteError(c, http.StatusForbidden, gin.H{"error": "sha256 keys do not match"})
@@ -50,7 +50,7 @@ func AuthenticateGithubWebhook(c *gin.Context) {
 
 	c.Set("evtData", evtData)
 
-	project, err := database.GetProjectByUUID(json.ProjectUUID)
+	project, err := database.GetProjectByUUID(jsonPayload.ProjectUUID)
 
 	if err != nil {
 		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -99,6 +99,73 @@ func parseGithubPayload(jsonBody *string, evtType string) (*GithubEventData, err
 		evtData.Ref = gjson.Get(*jsonBody, "ref").String()
 		c := gjson.Get(*jsonBody, "commits").String()
 		var commits []GithubCommit
+
+		if err := json.Unmarshal([]byte(c), &commits); err != nil {
+			return nil, err
+		}
+
+		evtData.Commits = commits
+	}
+	return &evtData, nil
+}
+
+func AuthenticateGitlabWebhook(c *gin.Context) {
+
+	var jsonPayload validator.URIProjectUUID
+
+	if err := c.ShouldBindUri(&jsonPayload); err != nil {
+		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if jsonPayload.ProjectUUID != c.GetHeader("x-gitlab-token") {
+		response.WriteError(c, http.StatusForbidden, gin.H{"error": "secret key do not match"})
+		return
+	}
+
+	jsonData, err := ioutil.ReadAll(c.Request.Body)
+
+	if err != nil {
+		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	jsonString := string(jsonData)
+
+	evtData, err := parseGitlabPayload(&jsonString, c.GetHeader("x-gitlab-event"))
+
+	if err != nil {
+		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.Set("evtData", evtData)
+
+	project, err := database.GetProjectByUUID(jsonPayload.ProjectUUID)
+
+	if err != nil {
+		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if project == nil {
+		response.WriteSuccess(c, http.StatusNotFound, gin.H{"error": "project not found"})
+		return
+	}
+
+	c.Set("Project", project)
+
+	c.Next()
+}
+
+func parseGitlabPayload(jsonBody *string, evtType string) (*GitlabEventData, error) {
+
+	evtData := GitlabEventData{
+		RepositoryExtID: gjson.Get(*jsonBody, "project_id").String(),
+	}
+
+	if evtType == "Push Hook" {
+		evtData.Ref = gjson.Get(*jsonBody, "ref").String()
+		c := gjson.Get(*jsonBody, "commits").String()
+		var commits []GitlabCommit
 
 		if err := json.Unmarshal([]byte(c), &commits); err != nil {
 			return nil, err

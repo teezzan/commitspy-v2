@@ -1,6 +1,7 @@
 package webhook
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -25,24 +26,70 @@ func (ctrl EventHandlers) Github(c *gin.Context) {
 			return
 		}
 		response.WriteSuccess(c, http.StatusAccepted, gin.H{})
-	}
+		return
+	} else if evtType == "push" {
 
-	newCommit := &account.Commit{
-		ProjectID: projectCtx.ID,
-	}
-
-	for _, commit := range evtDataCtx.Commits {
-		if commit.Distinct {
-			newCommit.Number += 1
-			newCommit.ExternalIDs = append(newCommit.ExternalIDs, commit.ExtID)
+		newCommit := &account.Commit{
+			ProjectID: projectCtx.ID,
 		}
+
+		for _, commit := range evtDataCtx.Commits {
+			if commit.Distinct {
+				newCommit.Number += 1
+				newCommit.ExternalIDs = append(newCommit.ExternalIDs, commit.ExtID)
+			}
+		}
+
+		err := database.CreateCommit(newCommit)
+		if err != nil {
+			response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		response.WriteSuccess(c, http.StatusOK, gin.H{})
 	}
 
-	err := database.CreateCommit(newCommit)
+}
+
+func (ctrl EventHandlers) Gitlab(c *gin.Context) {
+
+	projectCtx, _ := ProjectFromCtx(c)
+	evtDataCtx, _ := GithubEventDataFromCtx(c)
+	commitCount, err := database.CountCommitsByProjectUUID(fmt.Sprint(projectCtx.ID))
 	if err != nil {
 		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	response.WriteSuccess(c, http.StatusOK, gin.H{})
+	if *commitCount == 0 {
+		projectCtx.ExternalID = evtDataCtx.RepositoryExtID
+		err := database.UpdateProject(projectCtx)
+		if err != nil {
+			response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		response.WriteSuccess(c, http.StatusAccepted, gin.H{})
+		return
+	} else {
+
+		newCommit := &account.Commit{
+			ProjectID: projectCtx.ID,
+		}
+
+		for _, commit := range evtDataCtx.Commits {
+			if commit.Distinct {
+				newCommit.Number += 1
+				newCommit.ExternalIDs = append(newCommit.ExternalIDs, commit.ExtID)
+			}
+		}
+
+		err := database.CreateCommit(newCommit)
+		if err != nil {
+			response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		response.WriteSuccess(c, http.StatusOK, gin.H{})
+	}
+
 }
