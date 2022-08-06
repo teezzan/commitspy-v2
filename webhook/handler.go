@@ -86,10 +86,12 @@ func (ctrl EventHandlers) Gitlab(c *gin.Context) {
 			}
 		}
 
-		err := database.CreateCommit(newCommit)
-		if err != nil {
-			response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
+		if newCommit.Number > 0 {
+			err := database.CreateCommit(newCommit)
+			if err != nil {
+				response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
+				return
+			}
 		}
 
 		response.WriteSuccess(c, http.StatusOK, gin.H{})
