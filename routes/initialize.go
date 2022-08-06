@@ -27,4 +27,5 @@ func getRoutes() {
 
 	addUserRoutes(routerGroup)
 	addProjectRoutes(routerGroup)
+	addWebhookRoutes(routerGroup)
 }

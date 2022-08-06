@@ -38,14 +38,31 @@ func GetUserProjectByNameOrURL(userId int64, name string, url string) (*account.
 	return &p, nil
 }
 
-func GetUserProjectById(userId int64, projectId int64) (*account.Project, error) {
+func GetUserProjectById(userId int64, projectId string) (*account.Project, error) {
 	var p account.Project
 	result := db.Where(&account.Project{UserID: userId, ID: projectId}).Limit(1).Find(&p)
 	if result.Error != nil {
 		return nil, result.Error
 	}
 	if result.RowsAffected > 1 {
-		return nil, fmt.Errorf("expected 1 match for project Id %d: found %d matches", projectId, result.RowsAffected)
+		return nil, fmt.Errorf("expected 1 match for project Id %s: found %d matches", projectId, result.RowsAffected)
+	}
+	if result.RowsAffected == 0 {
+		return nil, nil
+	}
+	return &p, nil
+}
+
+func GetProjectByUUID(projectID string) (*account.Project, error) {
+	var p account.Project
+
+	result := db.Where(&account.Project{ID: projectID}).Limit(1).Find(&p)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	if result.RowsAffected > 1 {
+		return nil,
+			fmt.Errorf("expected 1 match for project Id %s: found %d matches", projectID, result.RowsAffected)
 	}
 	if result.RowsAffected == 0 {
 		return nil, nil

@@ -104,7 +104,7 @@ func (suite *ProjectRouteTestSuite) TestProjectCreateRoute() {
 func (suite *ProjectRouteTestSuite) TestProjectFetchRoute() {
 
 	Convey("Should fetch all projects for specific user", suite.T(), func() {
-		var projectID int
+		var projectID string
 		Convey("Should create a project for user", func() {
 			var res ProjectDetailsResponse
 
@@ -160,7 +160,7 @@ func (suite *ProjectRouteTestSuite) TestProjectFetchRoute() {
 			So(err, ShouldBeNil)
 			So(*statusCode, ShouldEqual, 200)
 			So(res.Data.Projects, ShouldHaveLength, 2)
-			projectID = int(res.Data.Projects[0].ID)
+			projectID = res.Data.Projects[0].ID
 			Convey("Should fetch one project of specific user", func() {
 				var res ProjectDetailsResponse
 
@@ -169,7 +169,7 @@ func (suite *ProjectRouteTestSuite) TestProjectFetchRoute() {
 
 				statusCode, err := setup.HTTPRequest(router,
 					"GET",
-					fmt.Sprintf("/api/project/%d", projectID),
+					fmt.Sprintf("/api/project/%s", projectID),
 					nil,
 					gin.H{"Authorization": "TestToken"},
 					&res)
@@ -221,7 +221,7 @@ func (suite *ProjectRouteTestSuite) TestProjectUpdateRoute() {
 
 		statusCode, err = setup.HTTPRequest(router,
 			"POST",
-			fmt.Sprintf("/api/project/%d", projectID),
+			fmt.Sprintf("/api/project/%s", projectID),
 			bytes.NewReader(body),
 			gin.H{"Authorization": "TestToken"},
 			&res2)
@@ -267,7 +267,7 @@ func (suite *ProjectRouteTestSuite) TestProjectDeleteRoute() {
 
 		statusCode, err = setup.HTTPRequest(router,
 			"DELETE",
-			fmt.Sprintf("/api/project/%d", projectID),
+			fmt.Sprintf("/api/project/%s", projectID),
 			nil,
 			gin.H{"Authorization": "TestToken"},
 			&res2)

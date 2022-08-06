@@ -139,7 +139,6 @@ func (ctrl Project) Update(c *gin.Context) {
 	response.WriteSuccess(c, http.StatusAccepted, gin.H{"project": project})
 
 }
-
 func (ctrl Project) Delete(c *gin.Context) {
 	userCtx, _ := auth.UserFromCtx(c)
 
