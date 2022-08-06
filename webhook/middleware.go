@@ -88,6 +88,10 @@ func GithubEventDataFromCtx(c *gin.Context) (*GithubEventData, bool) {
 	evtCtx, ok := c.Get("evtData")
 	return evtCtx.(*GithubEventData), ok
 }
+func GitlabEventDataFromCtx(c *gin.Context) (*GitlabEventData, bool) {
+	evtCtx, ok := c.Get("evtData")
+	return evtCtx.(*GitlabEventData), ok
+}
 
 func parseGithubPayload(jsonBody *string, evtType string) (*GithubEventData, error) {
 

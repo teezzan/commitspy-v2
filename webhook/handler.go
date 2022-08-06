@@ -3,6 +3,7 @@ package webhook
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/teezzan/commitspy-v2/account"
@@ -54,14 +55,14 @@ func (ctrl EventHandlers) Github(c *gin.Context) {
 func (ctrl EventHandlers) Gitlab(c *gin.Context) {
 
 	projectCtx, _ := ProjectFromCtx(c)
-	evtDataCtx, _ := GithubEventDataFromCtx(c)
+	evtDataCtx, _ := GitlabEventDataFromCtx(c)
 	commitCount, err := database.CountCommitsByProjectUUID(fmt.Sprint(projectCtx.ID))
 	if err != nil {
 		response.WriteError(c, http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	if *commitCount == 0 {
+	if *commitCount == 0 && projectCtx.ExternalID == "" {
 		projectCtx.ExternalID = evtDataCtx.RepositoryExtID
 		err := database.UpdateProject(projectCtx)
 		if err != nil {
@@ -77,7 +78,11 @@ func (ctrl EventHandlers) Gitlab(c *gin.Context) {
 		}
 
 		for _, commit := range evtDataCtx.Commits {
-			if commit.Distinct {
+			isMergeCommit :=
+				strings.Contains(commit.Message, "Merge branch '") &&
+					strings.Contains(commit.Message, "' into '") &&
+					strings.Contains(commit.Message, "See merge request ")
+			if !isMergeCommit {
 				newCommit.Number += 1
 				newCommit.ExternalIDs = append(newCommit.ExternalIDs, commit.ExtID)
 			}

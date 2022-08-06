@@ -11,4 +11,5 @@ func addWebhookRoutes(rg *gin.RouterGroup) {
 	route := rg.Group("/webhooks")
 
 	route.POST("/gh/:uuid", webhook.AuthenticateGithubWebhook, webhookHandler.Github)
+	route.POST("/gl/:uuid", webhook.AuthenticateGitlabWebhook, webhookHandler.Gitlab)
 }

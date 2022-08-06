@@ -47,7 +47,7 @@ func CountCommitsByProjectUUID(projectUUID string) (*int64, error) {
 		return nil, err
 	}
 
-	result := db.Where(&account.Commit{ProjectID: uuid}).Count(&count)
+	result := db.Model(&account.Commit{}).Where("project_id", uuid).Count(&count)
 	if result.Error != nil {
 		return nil, result.Error
 	}
