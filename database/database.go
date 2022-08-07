@@ -45,9 +45,9 @@ func MigrateDBModels() {
 }
 
 func DropUserTable() {
-	db.Exec("DELETE FROM users")
+	db.Exec("TRUNCATE TABLE users CASCADE;")
 }
 
 func DropProjectTable() {
-	db.Exec("DELETE FROM projects")
+	db.Exec("TRUNCATE TABLE projects CASCADE;")
 }

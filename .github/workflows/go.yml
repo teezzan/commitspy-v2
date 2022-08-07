@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres
+        image: postgres:12.11
         env:
           POSTGRES_PASSWORD: ${{ secrets.DB_PASS }}
           POSTGRES_USER: ${{ secrets.DB_USER }}

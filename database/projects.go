@@ -50,6 +50,26 @@ func GetUserProjectById(userId int64, projectId string) (*account.Project, error
 	if result.RowsAffected == 0 {
 		return nil, nil
 	}
+
+	if p.CommitDeadline == nil {
+		return &p, nil
+	}
+	
+	commits, err := GetCommitsInTimeWindow(&p)
+	if err != nil {
+		return nil, err
+	}
+
+	cohort := account.CommitCohort{
+		CommitDeadline: *p.CommitDeadline,
+	}
+
+	for _, commit := range *commits {
+		cohort.Number += commit.Number
+	}
+
+	p.CurrentCohort = &cohort
+
 	return &p, nil
 }
 

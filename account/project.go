@@ -15,7 +15,8 @@ type Project struct {
 	Type             int16          `json:"type"`
 	CommitGoal       int64          `json:"commit_goal"`
 	CommitTimeWindow int64          `json:"commit_time_window"`
-	CommitDeadline   *time.Time     `gorm:"default:null" json:"commit_deadline"`
+	CommitDeadline   *time.Time     `gorm:"default:null" json:"-"`
+	CurrentCohort    *CommitCohort  `gorm:"-:all" json:"current_cohort,omitempty"`
 	UserID           int64          `json:"-"`
 	User             User           `json:"-"`
 	UpdatedAt        time.Time      `json:"-"`
