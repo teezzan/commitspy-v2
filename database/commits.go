@@ -1,6 +1,8 @@
 package database
 
 import (
+	"time"
+
 	"github.com/teezzan/commitspy-v2/account"
 )
 
@@ -40,14 +42,17 @@ func CountCommitsByProjectUUID(projectID string) (*int64, error) {
 	return &count, nil
 }
 
-func GetCurrentCommitCohort(project *account.Project) (*account.Commit, error) {
-	// var cohort account.CommitCohort
-	var commits account.Commit
+func GetCommitsInTimeWindow(project *account.Project) (*[]account.Commit, error) {
+	var commits []account.Commit
 
-	// startTimeWindow := project.CommitDeadline.Add(-1 * time.Hour * time.Duration(project.CommitTimeWindow))
-	result := db.Model(&account.Commit{}).Where("created_at < ?", project.CommitDeadline).Find(&commits)
+	startTimeWindow := project.CommitDeadline.Add(-1 * time.Hour * time.Duration(project.CommitTimeWindow))
+	result := db.Model(&account.Commit{}).Where("created_at < ?", project.CommitDeadline).Where("created_at > ?", startTimeWindow).Find(&commits)
 	if result.Error != nil {
 		return nil, result.Error
 	}
+	if result.RowsAffected == 0 {
+		return nil, nil
+	}
 	return &commits, nil
 }
+
