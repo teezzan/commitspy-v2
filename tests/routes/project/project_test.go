@@ -58,7 +58,7 @@ func (suite *ProjectRouteTestSuite) TestProjectCreateRoute() {
 
 		So(err, ShouldBeNil)
 		So(*statusCode, ShouldEqual, 201)
-		So(res.Data.Project.ID, ShouldBeGreaterThanOrEqualTo, 1)
+		So(res.Data.Project.ID, ShouldNotBeBlank)
 		So(res.Data.Project.URL, ShouldEqual, "https://github.com/memme/")
 		So(res.Data.Project.Name, ShouldEqual, "Mememe")
 		So(res.Data.Project.Type, ShouldEqual, 1)
