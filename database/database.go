@@ -51,3 +51,7 @@ func DropUserTable() {
 func DropProjectTable() {
 	db.Exec("TRUNCATE TABLE projects CASCADE;")
 }
+
+func DropCommitTable() {
+	db.Exec("TRUNCATE TABLE commits CASCADE;")
+}

@@ -48,7 +48,7 @@ func (ctrl EventHandlers) Github(c *gin.Context) {
 
 		response.WriteSuccess(c, http.StatusOK, gin.H{})
 	}
-
+	response.WriteSuccess(c, http.StatusNotModified, gin.H{})
 }
 
 func (ctrl EventHandlers) Gitlab(c *gin.Context) {
