@@ -216,7 +216,6 @@ func (suite *ProjectRouteTestSuite) TestProjectUpdateRoute() {
 				"name": "Mememe Again"
 				}`)
 
-		error = setup.UserAccount(router)
 		So(error, ShouldBeNil)
 
 		statusCode, err = setup.HTTPRequest(router,
